@@ -6,4 +6,12 @@ from django.contrib.auth.forms import UserCreationForm
 def home(request):
     return render(request,'cp_main/home.html')
 
-class Signup(generic.CreateView):
+class SignUp(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('home')
+    template_name = 'registration/signup.html'
+
+class LoginView(generic.CreateView):
+    form_class = UserCreationForm
+    success_url = reverse_lazy('home')
+    template_name = 'registration/login.html'
