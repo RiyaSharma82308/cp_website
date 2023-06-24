@@ -17,6 +17,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=100,choices=ROLE_CHOICES, blank=True, null=True)
     Bio = HTMLField()
+    avatar = models.ImageField(blank = True,upload_to = 'avatars/')
     registration_no = models.CharField(max_length=10,blank=True)
     codeforces_username = models.CharField(max_length=100,blank=True)
     leetcode_username = models.CharField(max_length=100,blank=True)

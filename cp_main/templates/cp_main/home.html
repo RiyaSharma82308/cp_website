@@ -1,9 +1,9 @@
 {% extends 'cp_main\base.html' %}
 {% block content %}
-<a href="{% url 'profile' user.profile.slug %}">My Profile</a>
 
 
-<div class="p-4 p-md-5 mb-4 rounded text-body-emphasis bg-body-secondary">
+
+<div class="p-4 p-md-5 mb-4 rounded text-body-emphasis">
     <div class="col-lg-6 px-0">
         <h1 class="display-4 fst-italic">Today's Contests</h1>
         <ul>
@@ -19,13 +19,5 @@
         </ul>
     </div>
 </div>
-{% if user.profile.role == "Lead" or user.profile.role == "Co-lead" %}
-<div>
-    <a href="{% url 'all_users' %}">all users</a>
-</div>
-<div class="container">
-    <a href="{% url 'send_email' %}" class="btn btn-success"> Send Email</a>
-</div>
 
-{% endif %}
 {% endblock %}

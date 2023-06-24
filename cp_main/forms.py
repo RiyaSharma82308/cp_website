@@ -19,6 +19,6 @@ class ProfileForm(forms.ModelForm):
     registration_no = models.CharField(max_length=10,blank=True)
     class Meta:
         model = Profile
-        fields = ['Bio','codeforces_username','leetcode_username','codechef_username','registration_no','admitted_year']
+        fields = ['Bio','codeforces_username','leetcode_username','codechef_username','registration_no','admitted_year','avatar']
 
 
