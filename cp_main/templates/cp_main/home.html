@@ -21,7 +21,10 @@
 </div>
 {% if user.profile.role == "Lead" or user.profile.role == "Co-lead" %}
 <div>
-    <a href="">all users</a>
+    <a href="{% url 'all_users' %}">all users</a>
+</div>
+<div class="container">
+    <a href="{% url 'send_email' %}" class="btn btn-success"> Send Email</a>
 </div>
 
 {% endif %}

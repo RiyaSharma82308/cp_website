@@ -15,22 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin,auth
 from django.urls import path,include
-from cp_main import views
-from django.contrib.auth import views as auth_views
-from django.conf.urls.static import static
-from django.conf import settings
+from .import views
+
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('',views.home, name='home'),
-    # authenication
-    path('signup', views.SignUp.as_view(), name='signup'),
-    path('login', auth_views.LoginView.as_view(), name='login'),
-    path('logout',auth_views.LogoutView.as_view(), name='logout'),
-    # member
-    path('tinymce/', include('tinymce.urls')),
-    path("services/",include("cp_main.urls"))
+    path('profile/<slug:slug>', views.profile, name='profile'),
+    path('all_users', views.all_users, name ='all_users'),
+    path('send/email/', views.send_email ,  name="send_email")
     
-
 ]
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

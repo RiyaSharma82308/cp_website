@@ -1,7 +1,7 @@
 from django import forms 
 from .models import *
 from django.contrib.auth.models import User
-
+from tinymce.widgets import TinyMCE
 
 class UserForm(forms.ModelForm):
     username = forms.CharField()
@@ -20,3 +20,5 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ['Bio','codeforces_username','leetcode_username','codechef_username','registration_no','admitted_year']
+
+
