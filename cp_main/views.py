@@ -19,7 +19,7 @@ from .models import User
 from django.test.client import Client
 from django.contrib.auth.decorators import login_required,user_passes_test
 from .utils import  send_email_to_client
-
+from .models import *
 ## FUNCTION BASED
     
 def get_upcoming_contests():
@@ -29,7 +29,6 @@ def get_upcoming_contests():
   headers = {
     "Authorization": "Bearer {}".format(settings.CODEFORCES_API_KEY)
   }
-
   response = requests.get(url, headers=headers)
   data = response.json()
   contests = []
@@ -37,16 +36,15 @@ def get_upcoming_contests():
     for contest in data["result"]:
       if contest["phase"] == "BEFORE":
         now = datetime.datetime.now()
-        if datetime.datetime.fromtimestamp(contest["startTimeSeconds"]) == now :
-            contests.append(contest)
-
+        contests.append(contest)    
   return contests
 
 @login_required
 def home(request):
-  """Renders the home page of the web application."""
   contests = get_upcoming_contests()
-  return render(request, 'cp_main/home.html', {"contestes":contests})
+  print(len(contests))
+  a = {"contestes":contests}
+  return render(request, 'cp_main/home.html', {"contests":contests})
 
 def all_users(request):
    all_profiles = Profile.objects.all()
@@ -97,3 +95,33 @@ class LoginView(generic.CreateView):
 def send_email(request):
     send_email_to_client()
     return redirect('/')
+
+
+def assignment_list(request):
+    assignments = assignment.objects.all()
+    context = {'assignments': assignments}
+    return render(request, 'cp_main/assignment.html', context)
+
+@login_required
+def create_assignment(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        description = request.POST['description']
+        assignment = assignment.question(title=title, description=description)
+        assignment.save()
+        return redirect('assignment')
+    else:
+        return render(request, 'cp_main/create.html')
+    
+def view_submissions(request, assignment_id):
+    assignment = assignment.objects.get(pk=assignment_id)
+    submissions = submission.objects.filter(sub=assignment)
+    context = {'assignment': assignment, 'submissions': submissions}
+    return render(request, 'cp_main/view_submissions.html', context)
+
+def download_file(request, assignment_id, submission_id):
+    submission = submission.objects.get(pk=submission_id)
+    file = submission.file
+    response = HttpResponse(file, content_type='application/octet-stream')
+    response['Content-Disposition'] = 'attachment; filename={}'.format(file.name)
+    return response

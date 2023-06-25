@@ -1,0 +1,25 @@
+{% extends 'cp_main\base.html' %}
+{% block content %}
+
+
+<h1>assignment page</h1>
+
+{% if user.is_authenticated %}
+{% if user.profile.role == "Lead" or user.profile.role == "Co-lead" %}
+<h1>Add Questions for this week</h1>
+<div class="accordion" id="accordionExample">
+    <ul>
+        {% for assignment in assignments %}
+            <li>
+                <a href="{% url 'view_submissions' assignment.pk %}">
+                    {{ assignment.title }}
+                </a>
+            </li>
+        {% endfor %}
+        </ul>
+</div>
+{% endif %}
+{% endif %}
+
+
+{% endblock %}

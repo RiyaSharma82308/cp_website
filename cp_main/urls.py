@@ -21,6 +21,9 @@ from .import views
 urlpatterns = [
     path('profile/<slug:slug>', views.profile, name='profile'),
     path('all_users', views.all_users, name ='all_users'),
-    path('send/email/', views.send_email ,  name="send_email")
-    
+    path('send/email/', views.send_email ,  name="send_email"),
+    path('assignment/list/', views.assignment_list, name='assignment_list'),
+    path('create/', views.create_assignment, name='create_assignment'),
+    path('<int:assignment_id>/submissions/', views.view_submissions, name='view_submissions'),
+    path('<int:assignment_id>/submissions/<int:submission_id>/download/', views.download_file, name='download_file'),
 ]

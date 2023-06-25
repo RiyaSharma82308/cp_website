@@ -35,3 +35,25 @@ def create_profile(sender,instance,created,**kwargs):
     if created:
         Profile.objects.create(user = instance,role = "Member")
         instance.profile.save()
+
+class question(models.Model):
+    title = models.TextField(blank=True)
+    description = models.TextField(blank=True)
+    url = models.URLField()
+
+class assignment(models.Model):
+    question=models.ManyToManyField(question,blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    date_assigned = models.DateTimeField()
+    submission_date = models.DateTimeField()
+
+class  submission(models.Model):
+    sub = models.ForeignKey(assignment , on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete = models.CASCADE )
+    file = models.FileField(null=True, upload_to='submissions')
+    status = models.CharField(max_length=20, choices=[
+        ('pending', 'Pending'),
+        ('approved', 'Approved'),
+        ('rejected', 'Rejected'),
+    ])
+    
