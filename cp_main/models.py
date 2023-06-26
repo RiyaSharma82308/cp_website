@@ -36,19 +36,38 @@ def create_profile(sender,instance,created,**kwargs):
         Profile.objects.create(user = instance,role = "Member")
         instance.profile.save()
 
-class question(models.Model):
-    title = models.TextField(blank=True)
-    description = models.TextField(blank=True)
-    url = models.URLField()
 
-class assignment(models.Model):
-    question=models.ManyToManyField(question,blank=True)
+class Question(models.Model):
+    title = models.CharField(max_length=100,blank=True)
+    description = HTMLField()
+    url = models.URLField()
+    slug = models.SlugField(blank=True)
+    def __str__(self):
+        return self.title
+    def save(self,*args,**kwargs):
+        if not self.slug:
+            self.slug = uuid.uuid4()
+        super(Question, self).save(*args,**kwargs)
+
+
+
+class Assignment(models.Model):
+    title = models.CharField(max_length=200, blank=True)
+    question=models.ManyToManyField(Question,blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     date_assigned = models.DateTimeField()
     submission_date = models.DateTimeField()
+    slug = models.SlugField(blank=True)
+    def __str__(self):
+        return self.title
+    def save(self,*args,**kwargs):
+        if not self.slug:
+            self.slug = uuid.uuid4()
+        super(Assignment, self).save(*args,**kwargs)
 
-class  submission(models.Model):
-    sub = models.ForeignKey(assignment , on_delete=models.CASCADE)
+
+class Submission(models.Model):
+    sub = models.ForeignKey(Assignment , on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete = models.CASCADE )
     file = models.FileField(null=True, upload_to='submissions')
     status = models.CharField(max_length=20, choices=[
@@ -56,4 +75,11 @@ class  submission(models.Model):
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ])
-    
+    submitted = models.DateTimeField(auto_now_add=True)
+    slug = models.SlugField(blank=True)
+    def __str__(self):
+        return self.submitted
+    def save(self,*args,**kwargs):
+        if not self.slug:
+            self.slug = uuid.uuid4()
+        super(Submission, self).save(*args,**kwargs)

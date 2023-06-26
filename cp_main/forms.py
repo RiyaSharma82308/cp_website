@@ -2,6 +2,8 @@ from django import forms
 from .models import *
 from django.contrib.auth.models import User
 from tinymce.widgets import TinyMCE
+from django.forms import ModelForm
+
 
 class UserForm(forms.ModelForm):
     username = forms.CharField()

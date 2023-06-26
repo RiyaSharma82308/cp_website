@@ -14,15 +14,15 @@
             </tr>
         </thead>
         <tbody>
-            {% for i in all_profiles %}
+            {% for profile in all_profiles %}
                 <tr>
                     <a href="#">
                     <th scope="row" class="table-secondary">{{forloop.counter}}</th>
-                    <td class="table-secondary">{{ i.user.username }}</td>
-                    <td class="table-secondary">{{ i.registration_no }}</td>
-                    <td class="table-secondary">{{ i.codeforces_username }}</td>
-                    <td class="table-secondary">{{ i.leetcode_username }}</td>
-                    <td class="table-secondary">{{ i.codechef_username }}</td>
+                    <td class="table-secondary">{{ profile.user.username }}</td>
+                    <td class="table-secondary">{{ profile.registration_no }}</td>
+                    <td class="table-secondary">{{ profile.codeforces_username }}</td>
+                    <td class="table-secondary">{{ profile.leetcode_username }}</td>
+                    <td class="table-secondary">{{ profile.codechef_username }}</td>
                     <td class="table-secondary">{{ 0 }}</td>
     
                     </a>
