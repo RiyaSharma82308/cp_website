@@ -22,6 +22,7 @@ urlpatterns = [
     path('profile/<slug:slug>', views.profile, name='profile'),
     path('all_users', views.all_users, name ='all_users'),
     path('send/email/', views.send_email ,  name="send_email"),
-    
-    
+    path('create/assignment', views.CreateAssignment.as_view() , name="create_assignment"),
+    path('submit/assignment', views.SubmitAssignment.as_view() , name="submit_assignment"),
+    path('create/question', views.CreateQuestion.as_view() , name="create_question"),
 ]

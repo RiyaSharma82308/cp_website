@@ -20,6 +20,7 @@ from django.test.client import Client
 from django.contrib.auth.decorators import login_required,user_passes_test
 from .utils import  send_email_to_client
 from .models import *
+from django.contrib.auth.mixins import LoginRequiredMixin
 ## FUNCTION BASED
     
 def get_upcoming_contests():
@@ -99,3 +100,32 @@ def send_email(request):
     return redirect('/')
 
 
+class CreateAssignment(LoginRequiredMixin,generic.CreateView):
+    model = Assignment
+    fields = ['title','question','submission_date']
+    template_name = 'cp_main/create_assignment.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        super(CreateAssignment, self).form_valid(form)
+        return redirect('home')
+    
+class SubmitAssignment(LoginRequiredMixin, generic.CreateView):
+    model = Submission
+    fields = ['sub','file']
+    template_name = 'cp_main/submit_assignment.html'
+    success_url = reverse_lazy('home')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        super(SubmitAssignment, self).form_valid(form)
+        return redirect('home')
+    
+class CreateQuestion(LoginRequiredMixin, generic.CreateView):
+    model = Question
+    fields = ['title','description','url']
+    template_name = 'cp_main/create_question.html'
+    success_url = reverse_lazy('create_assignment')
+    
+    

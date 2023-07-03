@@ -1,0 +1,12 @@
+{% extends 'cp_main\base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+    <h1>Submit Assignment here</h1>
+    <hr/>
+    {{ form|crispy }}
+</div>
+
+
+{% endblock %}

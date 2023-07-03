@@ -24,3 +24,7 @@ class ProfileForm(forms.ModelForm):
         fields = ['Bio','codeforces_username','leetcode_username','codechef_username','registration_no','admitted_year','avatar']
 
 
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model=Question
+        fields=['title','description','url']

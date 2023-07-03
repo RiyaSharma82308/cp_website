@@ -55,7 +55,7 @@ class Assignment(models.Model):
     title = models.CharField(max_length=200, blank=True)
     question=models.ManyToManyField(Question,blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    date_assigned = models.DateTimeField()
+    date_assigned = models.DateTimeField(auto_now_add=True)
     submission_date = models.DateTimeField()
     slug = models.SlugField(blank=True)
     def __str__(self):
