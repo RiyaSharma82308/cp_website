@@ -25,4 +25,7 @@ urlpatterns = [
     path('create/assignment', views.CreateAssignment.as_view() , name="create_assignment"),
     path('submit/assignment', views.SubmitAssignment.as_view() , name="submit_assignment"),
     path('create/question', views.CreateQuestion.as_view() , name="create_question"),
+    path('delete/question', views.DeleteQuestion.as_view(), name='delete_question'),
+    path('view/assignment/<slug:slug>', views.ViewQuestion.as_view(), name='view_assignment'),
+    path('update/assignment/<slug:slug>', views.UpdateAssignment.as_view(), name='update_assignment'),
 ]

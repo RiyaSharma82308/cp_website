@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from tinymce.models import HTMLField
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from taggit.managers import TaggableManager
+
 # Create your models here.
 
 ROLE_CHOICES=[
@@ -57,6 +59,7 @@ class Assignment(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     date_assigned = models.DateTimeField(auto_now_add=True)
     submission_date = models.DateTimeField()
+    tags = TaggableManager()
     slug = models.SlugField(blank=True)
     def __str__(self):
         return self.title

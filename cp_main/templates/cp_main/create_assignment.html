@@ -5,10 +5,16 @@
 <div class="container">
     <h1>Create Assignment here</h1>
     <hr/>
-    {{ form.title|as_crispy_field}}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.title|as_crispy_field}}
     {{ form.question|as_crispy_field}}
     <a class = "btn btn-light" href="{% url 'create_question' %}"> Add Question </a>
+    {{ form.tags|as_crispy_field }}
     {{ form.submission_date|as_crispy_field}}
+    <button type="submit" class="btn btn-success"> Done </button>
+    </form>
+    
 </div>
 
 

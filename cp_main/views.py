@@ -20,6 +20,8 @@ from django.test.client import Client
 from django.contrib.auth.decorators import login_required,user_passes_test
 from .utils import  send_email_to_client
 from .models import *
+from django.forms.utils import ErrorList
+from django.http import Http404, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 ## FUNCTION BASED
     
@@ -102,10 +104,10 @@ def send_email(request):
 
 class CreateAssignment(LoginRequiredMixin,generic.CreateView):
     model = Assignment
-    fields = ['title','question','submission_date']
+    fields = ['title','question','submission_date','tags']
+    slug_field = 'Assignment.slug'
     template_name = 'cp_main/create_assignment.html'
     success_url = reverse_lazy('home')
-
     def form_valid(self, form):
         form.instance.user = self.request.user
         super(CreateAssignment, self).form_valid(form)
@@ -127,5 +129,32 @@ class CreateQuestion(LoginRequiredMixin, generic.CreateView):
     fields = ['title','description','url']
     template_name = 'cp_main/create_question.html'
     success_url = reverse_lazy('create_assignment')
+
+class UpdateAssignment(LoginRequiredMixin, generic.UpdateView):
+    model = Assignment
+    fields = ['title','question','submission_date']
+    slug_field = 'Assignment.slug'
+    template_name = 'cp_main/update_assignment.html'
+    success_url = reverse_lazy('create_assignment')
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        super(UpdateAssignment, self).form_valid(form)
+        return redirect('home')
+
+class DeleteQuestion(LoginRequiredMixin, generic.DeleteView):
+    model = Question
+    template_name = 'cp_main/delete_question.html'
+    success_url = reverse_lazy('create_assignment')
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        super(SubmitAssignment, self).form_valid(form)
+        return redirect('home')
+
     
-    
+class ViewQuestion(generic.DetailView):
+    model=Question
+    slug_field = 'Question.slug'
+    template_name = 'cp_main/view_assignment.html'
+    success_url = reverse_lazy('create_assignment')
+

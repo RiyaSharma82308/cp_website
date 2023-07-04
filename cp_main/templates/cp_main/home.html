@@ -2,30 +2,28 @@
 {% block content %}
 
 
-
-<div class="p-4 p-md-5 mb-4 rounded text-body-emphasis">
-    <div class="col-lg-6 px-0">
-        <h1 class="display-4 fst-italic"><b>Upcoming Contests</b></h1>
-        <ul>
-            {% if contests|length > 0 %}
-            {% for contest in contests %}
+<div class="container">
+    <div class="p-4 p-md-5 mb-4 rounded text-body-emphasis">
+        <div class="col-lg-6 px-0">
+            <h1 class="display-4 fst-italic"><b>Upcoming Contests</b></h1>
             <ul>
-                <a href="{{ contest.url }}">{{ contest.name }}</a>
+                {% if contests|length > 0 %}
+                {% for contest in contests %}
+                <ul>
+                    <a href="{{ contest.url }}">{{ contest.name }}</a>
+                </ul>
+                {% endfor %}
+                {% else %}
+                <h7 class="display-5 fst-italic"><b>No contests today!!!</b></h7>
+                {% endif %}
             </ul>
-            {% endfor %}
-            {% else %}
-            <h7 class="display-5 fst-italic"><b>No contests today!!!</b></h7>
-            {% endif %}
-        </ul>
+        </div>
+    </div>
+    
+    
+    <div class="d-inline-block py-2">
+      <a class = "btn btn-light" style="margin-bottom:5px;" href="{% url 'create_assignment' %}"> Create Assignment </a>
+      <a class = "btn btn-light" style="margin-bottom:5px;" href="{% url 'submit_assignment' %}"> Submit Assignment </a>
     </div>
 </div>
-
-
-<div>
-  <a class = "btn btn-light" href="{% url 'create_assignment' %}"> Create Assignment </a>
-</div>
-<div>
-    <a class = "btn btn-light" href="{% url 'submit_assignment' %}"> Submit Assignment </a>
-</div>
-
 {% endblock %}
