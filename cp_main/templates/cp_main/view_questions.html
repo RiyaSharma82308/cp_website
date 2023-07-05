@@ -1,0 +1,32 @@
+{% extends 'cp_main\base.html' %} 
+{% block content %} 
+{% load crispy_forms_tags%}
+
+<div class="container">
+  <table class="table table-hover">
+    <thead>
+      <tr class="table-secondary text-center">
+        <th scope="col ">S no.</th>
+        <th scope="col ">Question Title</th>
+        <th scope="col ">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for question in questions %}
+      <tr class = "text-center">
+        <a href="#">
+          <th scope="row text-center" class="table-secondary">{{forloop.counter}}</th>
+          <td class="table-secondary ">  {{ question }}  </td>
+          <td class="table-secondary ">  
+            <span><a class = "btn btn-warning" style="margin-bottom:5px;" href="{% url 'update_question' slug=question.slug %}"> <i class="fa-solid fa-pen-nib"></i> </a> 
+             <a class = "btn btn-danger" style="margin-bottom:5px;" href="{% url 'delete_question' question.slug  %}"><i class="fa-sharp fa-solid fa-trash"></i> </a></span>  
+          </td>
+        </a>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a class = "btn btn-light" href="{% url 'create_new_question' %}"> Add New Question </a>
+</div>
+
+{% endblock %}

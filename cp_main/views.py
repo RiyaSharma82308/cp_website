@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render,redirect
+from django.http import HttpResponseRedirect
 from .forms import *
 from django.urls import reverse_lazy
 from django.views import generic
@@ -105,7 +106,6 @@ def send_email(request):
 class CreateAssignment(LoginRequiredMixin,generic.CreateView):
     model = Assignment
     fields = ['title','question','submission_date','tags']
-    slug_field = 'Assignment.slug'
     template_name = 'cp_main/create_assignment.html'
     success_url = reverse_lazy('home')
     def form_valid(self, form):
@@ -113,48 +113,81 @@ class CreateAssignment(LoginRequiredMixin,generic.CreateView):
         super(CreateAssignment, self).form_valid(form)
         return redirect('home')
     
-class SubmitAssignment(LoginRequiredMixin, generic.CreateView):
-    model = Submission
-    fields = ['sub','file']
-    template_name = 'cp_main/submit_assignment.html'
-    success_url = reverse_lazy('home')
-
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        super(SubmitAssignment, self).form_valid(form)
-        return redirect('home')
     
 class CreateQuestion(LoginRequiredMixin, generic.CreateView):
     model = Question
     fields = ['title','description','url']
     template_name = 'cp_main/create_question.html'
     success_url = reverse_lazy('create_assignment')
+    def get_success_url(self, **kwargs):
+        print(self.request)       
+        if  kwargs != None:
+            return reverse_lazy('create_assignment')
+        else:
+            return reverse_lazy('create_assignment')
 
+class CreateNewQuestion(LoginRequiredMixin, generic.CreateView):
+    model = Question
+    fields = ['title','description','url']
+    template_name = 'cp_main/create_new_question.html'
+    success_url = reverse_lazy('view_questions')
+
+
+def view_questions(request):
+    questions = Question.objects.all()
+    return render(request, 'cp_main/view_questions.html',{'questions':questions})
+
+def view_assignments(request):
+    assignments = Assignment.objects.all()
+    return render(request, 'cp_main/view_assignments.html',{'assignments':assignments})
+
+def view_assignment(request,slug):
+    assignment = Assignment.objects.get(slug=slug)
+    if request.method == 'POST':
+        if(Submission.objects.filter(user=request.user,sub=assignment).exists()):
+            submit_form = SubmitForm(request.POST,request.FILES,instance=request.user)
+        else:
+            submit_form = SubmitForm(request.POST,request.FILES)
+        submit_form = SubmitForm(request.POST,request.FILES)
+        if submit_form.is_valid():
+            submit_form_copy = submit_form.save(commit = False)
+            submit_form_copy.user = request.user
+            submit_form_copy.sub = assignment
+            submit_form_copy.status = 'pending'
+            submit_form_copy.save()
+            return redirect('view_assignments')
+        else:
+            return render(request, 'cp_main/view_assignment.html', {'assignment':assignment,'submit_form':submit_form,'submit_form_errors':submit_form.errors})
+    else:
+        if(Submission.objects.filter(user=request.user,sub=assignment).exists()):
+            submit_form = SubmitForm(instance=request.user)
+        else:
+            submit_form = SubmitForm()
+        return render(request,'cp_main/view_assignment.html',{'submit_form':submit_form,'assignment':assignment})
+    
 class UpdateAssignment(LoginRequiredMixin, generic.UpdateView):
     model = Assignment
     fields = ['title','question','submission_date']
-    slug_field = 'Assignment.slug'
     template_name = 'cp_main/update_assignment.html'
-    success_url = reverse_lazy('create_assignment')
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        super(UpdateAssignment, self).form_valid(form)
-        return redirect('home')
+    success_url = reverse_lazy('view_assignments')
 
-class DeleteQuestion(LoginRequiredMixin, generic.DeleteView):
+
+class UpdateQuestion(LoginRequiredMixin, generic.UpdateView):
     model = Question
-    template_name = 'cp_main/delete_question.html'
-    success_url = reverse_lazy('create_assignment')
+    fields = ['title','description','url']
+    template_name = 'cp_main/update_question.html'
+    success_url = reverse_lazy('view_questions')
 
-    def form_valid(self, form):
-        form.instance.user = self.request.user
-        super(SubmitAssignment, self).form_valid(form)
-        return redirect('home')
+def  delete_assignment(request, slug):
+    assignment = Assignment.objects.get(slug=slug)
+    if assignment:
+        assignment.delete()
+        return redirect('view_assignments')
 
-    
-class ViewQuestion(generic.DetailView):
-    model=Question
-    slug_field = 'Question.slug'
-    template_name = 'cp_main/view_assignment.html'
-    success_url = reverse_lazy('create_assignment')
+def delete_question(request,fetched_slug):
+    question = Question.objects.get(slug=fetched_slug)
+    if question:
+        question.delete()
+        return redirect('view_questions')
+
 

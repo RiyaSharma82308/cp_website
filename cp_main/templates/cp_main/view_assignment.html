@@ -1,0 +1,32 @@
+{% extends 'cp_main\base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+
+    <div class="accordion" id="accordionExample">
+        {% for question in assignment.question.all %}
+        <div class="accordion-item">
+          <h2 class="accordion-header" id="headingOne{{question.id}}">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne{{question.id}}" aria-expanded="false" aria-controls="collapseOne{{question.id}}">
+              {{ question.title }}
+            </button>
+          </h2>
+          <div id="collapseOne{{question.id}}" class="accordion-collapse collapse show" aria-labelledby="headingOne{{question.id}}" data-bs-parent="#accordionExample">
+            <div class="accordion-body">
+              {{ question.description }}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+    </div>
+</div>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ submit_form|crispy }}
+        <button type="submit" class="btn btn-outline-success"> Submit </button>
+    </form>
+
+</div>
+
+{% endblock %}

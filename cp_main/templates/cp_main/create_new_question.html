@@ -1,0 +1,18 @@
+{% extends 'cp_main\base.html' %}
+{% block content %}
+{% load crispy_forms_tags %}
+
+<div class="container">
+    <h1>Add Question</h1>
+    <hr/>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-outline-success"> Done</button>
+    </form>
+    
+</div>
+
+
+{% endblock %}

@@ -4,3 +4,4 @@ from .models import *
 admin.site.register(Profile)
 admin.site.register(Assignment)
 admin.site.register(Question)
+admin.site.register(Submission)

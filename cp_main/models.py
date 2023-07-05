@@ -52,11 +52,10 @@ class Question(models.Model):
         super(Question, self).save(*args,**kwargs)
 
 
-
 class Assignment(models.Model):
     title = models.CharField(max_length=200, blank=True)
     question=models.ManyToManyField(Question,blank=True)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date_assigned = models.DateTimeField(auto_now_add=True)
     submission_date = models.DateTimeField()
     tags = TaggableManager()
@@ -80,8 +79,6 @@ class Submission(models.Model):
     ])
     submitted = models.DateTimeField(auto_now_add=True)
     slug = models.SlugField(blank=True)
-    def __str__(self):
-        return self.submitted
     def save(self,*args,**kwargs):
         if not self.slug:
             self.slug = uuid.uuid4()
