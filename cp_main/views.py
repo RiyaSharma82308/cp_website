@@ -1,4 +1,5 @@
 import requests
+from datetime import date
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
@@ -25,7 +26,10 @@ from django.forms.utils import ErrorList
 from django.http import Http404, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 ## FUNCTION BASED
-    
+def convert_timestamp_to_datetime(timestamp):
+    dt = datetime.fromtimestamp(timestamp)
+    formatted_time = dt.strftime('%Y-%m-%d %H:%M:%S')
+    return formatted_time    
 def get_upcoming_contests():
   """Gets the list of upcoming contests from the Codeforces API."""
   url = "https://codeforces.com/api/contest.list"
@@ -35,11 +39,12 @@ def get_upcoming_contests():
       response = requests.get(url, headers=headers)
       data = response.json()
       contests = []
+      today = date.today()
       if "result" in data:
         for contest in data["result"]:
             if contest["phase"] == "BEFORE":
-                now = datetime.datetime.now()
-                contests.append(contest)
+                if convert_timestamp_to_datetime(contest["startTimeSeconds"])==today:
+                    contests.append(contest)
   except:
       contests = []   
 
