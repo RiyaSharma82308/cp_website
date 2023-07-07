@@ -69,11 +69,12 @@ class Assignment(models.Model):
 
 
 class Submission(models.Model):
-    sub = models.ForeignKey(Assignment , on_delete=models.CASCADE)
+    sub = models.ForeignKey(Assignment , on_delete=models.CASCADE,related_name="submission")
     user = models.ForeignKey(User, on_delete = models.CASCADE )
     file = models.FileField(null=True, upload_to='submissions')
-    status = models.CharField(max_length=20, choices=[
+    status = models.CharField(max_length=20, default="pending" ,choices=[
         ('pending', 'Pending'),
+        ('submitted','Submitted'),
         ('approved', 'Approved'),
         ('rejected', 'Rejected'),
     ])

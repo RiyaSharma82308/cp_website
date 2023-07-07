@@ -144,25 +144,18 @@ def view_assignments(request):
 def view_assignment(request,slug):
     assignment = Assignment.objects.get(slug=slug)
     if request.method == 'POST':
-        if(Submission.objects.filter(user=request.user,sub=assignment).exists()):
-            submit_form = SubmitForm(request.POST,request.FILES,instance=request.user)
-        else:
-            submit_form = SubmitForm(request.POST,request.FILES)
-        submit_form = SubmitForm(request.POST,request.FILES)
+        submit_form = SubmitForm(request.POST,request.FILES,instance=request.user)
         if submit_form.is_valid():
             submit_form_copy = submit_form.save(commit = False)
             submit_form_copy.user = request.user
             submit_form_copy.sub = assignment
-            submit_form_copy.status = 'pending'
+            submit_form_copy.status = 'submitted'
             submit_form_copy.save()
             return redirect('view_assignments')
         else:
             return render(request, 'cp_main/view_assignment.html', {'assignment':assignment,'submit_form':submit_form,'submit_form_errors':submit_form.errors})
     else:
-        if(Submission.objects.filter(user=request.user,sub=assignment).exists()):
-            submit_form = SubmitForm(instance=request.user)
-        else:
-            submit_form = SubmitForm()
+        submit_form = SubmitForm(instance=request.user)
         return render(request,'cp_main/view_assignment.html',{'submit_form':submit_form,'assignment':assignment})
     
 class UpdateAssignment(LoginRequiredMixin, generic.UpdateView):
