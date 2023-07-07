@@ -139,12 +139,18 @@ def view_questions(request):
 
 def view_assignments(request):
     assignments = Assignment.objects.all()
-    return render(request, 'cp_main/view_assignments.html',{'assignments':assignments})
+    submitted_assignments = Submission.objects.filter(user= request.user)
+    assignments = assignments.exclude(id__in=submitted_assignments.values("sub__id"))
+    return render(request, 'cp_main/view_assignments.html',{'assignments':assignments,'submitted_assignments':submitted_assignments})
 
 def view_assignment(request,slug):
     assignment = Assignment.objects.get(slug=slug)
     if request.method == 'POST':
-        submit_form = SubmitForm(request.POST,request.FILES,instance=request.user)
+        if(Submission.objects.filter(sub=assignment, user=request.user).exists()):
+            submission = Submission.objects.get(sub=assignment, user=request.user)
+            submit_form = SubmitForm(request.POST, request.FILES, instance=submission)
+        else:
+            submit_form = SubmitForm(request.POST,request.FILES)
         if submit_form.is_valid():
             submit_form_copy = submit_form.save(commit = False)
             submit_form_copy.user = request.user
@@ -155,7 +161,11 @@ def view_assignment(request,slug):
         else:
             return render(request, 'cp_main/view_assignment.html', {'assignment':assignment,'submit_form':submit_form,'submit_form_errors':submit_form.errors})
     else:
-        submit_form = SubmitForm(instance=request.user)
+        if(Submission.objects.filter(sub=assignment, user=request.user).exists()):
+            submission = Submission.objects.get(sub=assignment, user=request.user)
+            submit_form = SubmitForm( instance=submission)
+        else:
+            submit_form = SubmitForm()
         return render(request,'cp_main/view_assignment.html',{'submit_form':submit_form,'assignment':assignment})
     
 class UpdateAssignment(LoginRequiredMixin, generic.UpdateView):

@@ -2,14 +2,34 @@
 {% block content %}
 
 <div class="container">
-    <h2>Assigned Assignments</h2>
+
+  
+    <h2>Submitted Assignments</h2>
+    <div class="row">
+      <ul class="list-group">
+          {% for submission in submitted_assignments %}
+          <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
+            <span class="badge bg-primary rounded-pill">{{forloop.counter}}</span>
+            <span>{{ submission.sub.title }}</span>
+            <span>
+              <a class = "btn btn-warning" style="margin-bottom:5px;" href="{% url 'view_assignment' slug=submission.slug %}"> <i class="fa-solid fa-eye"></i> </a>
+              {% if user.profile.role == "Lead" or user.profile.role == "Co-lead" %}
+              <a class = "btn btn-warning" style="margin-bottom:5px;" href="{% url 'update_assignment' slug=submission.slug %}"> <i class="fa-solid fa-pen-nib"></i> </a>
+              <a class = "btn btn-danger" style="margin-bottom:5px;" href="{% url 'delete_assignment' slug=submission.slug  %}"> <i class="fa-sharp fa-solid fa-trash"></i> </a>  
+              {% endif %}
+            </span>
+          </li>
+          {% endfor %}
+      </ul>
+  </div>
     <hr>
+    <h2>Assigned Assignments</h2>
+    {% if not assignments %}
+    <h4 class="text-center">No assignmnets assigned !!</h4>
+    {% endif %}
     <div class="row">
       <ul class="list-group">
           {% for assignment in assignments %}
-          {% for submission in assignment.submission.all %}
-          {{submission.status}}
-          {% endfor %}
           <li class="list-group-item list-group-item-primary d-flex justify-content-between align-items-center">
             <span class="badge bg-primary rounded-pill">{{forloop.counter}}</span>
             <span>{{ assignment.title }}</span>
